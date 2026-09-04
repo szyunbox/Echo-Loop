@@ -80,7 +80,8 @@ String revenueCatApiKeyForPlatform({
 }
 
 /// 当前平台是否已配置 RevenueCat（决定是否初始化 SDK / 启用真实购买）。
-bool get isRevenueCatConfigured => revenueCatApiKey.isNotEmpty;
+//bool get isRevenueCatConfigured => revenueCatApiKey.isNotEmpty;
+bool get isRevenueCatConfigured => false;
 
 /// 本地 StoreKit 测试模式开关（`--dart-define=USE_LOCAL_STOREKIT=true`）。
 ///
@@ -127,7 +128,7 @@ String? manageSubscriptionsUrlForChannel(
   };
 }
 
-/// 网页支付订阅的自助管理页 URL（可选，`--dart-define=WEB_MANAGE_URL=` 注入）。
+/// 网页支付订阅的自助管理页 URL（可选，`--dart-define=WEB_MANAGE_URL=` 注入）。20260904 disable paywall
 ///
 /// Paddle 客户门户的自助管理链接按客户下发、带临时 token 会过期，无 SDK 时拿不到稳定 URL；
 /// 若你有统一的账户/管理页可注入此项，否则「管理订阅」按钮隐藏。
