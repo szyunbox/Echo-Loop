@@ -195,31 +195,22 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-
-      - name: Restore Android signing config
-        if: matrix.platform == 'android'
-        env:
-          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-        run: |
-          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > android/app/upload-keystore.jks
-          cat > android/key.properties <<EOF
-          storePassword=$ANDROID_KEYSTORE_PASSWORD
-          keyPassword=$ANDROID_KEY_PASSWORD
-          keyAlias=$ANDROID_KEY_ALIAS
-          storeFile=../app/upload-keystore.jks
-          EOF
-
+ 
       - name: Build Android APK
         if: matrix.platform == 'android'
         run: |
           flutter clean
-          flutter build apk --release --flavor=prod \
-            --target-platform android-arm64 \
-            --dart-define=API_BASE_URL=${{ vars.API_BASE_URL }} \
-            --dart-define=POSTHOG_HOST=${{ vars.POSTHOG_HOST }} \
-            --dart-define=SUPABASE_URL=${{ vars.SUPABASE_URL }} \
-            --dart-define=SUPABASE_PUBLISHABLE_KEY=${{ vars.SUPABASE_PUBLISHABLE_KEY }} \
-            --dart-define=GOOGLE_WEB_CLIENT_ID=${{ vars.GOOGLE_WEB_CLIENT_ID }}
+          flutter build apk --debug --flavor=prod \
+          --target-platform android-arm64 \
+          --dart-define=API_BASE_URL=${{ vars.API_BASE_URL }} \
+          --dart-define=POSTHOG_HOST=${{ vars.POSTHOG_HOST }} \
+          --dart-define=SUPABASE_URL=${{ vars.SUPABASE_URL }} \
+          --dart-define=SUPABASE_PUBLISHABLE_KEY=${{ vars.SUPABASE_PUBLISHABLE_KEY }} \
+          --dart-define=GOOGLE_WEB_CLIENT_ID=${{ vars.GOOGLE_WEB_CLIENT_ID }}
+
+      - name: Upload debug APK artifact
+        if: matrix.platform == 'android'
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-debug-apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
